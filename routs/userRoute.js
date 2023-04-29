@@ -10,7 +10,8 @@ router.post(
   authController.registration
 );
 router.post("/login", authController.login);
-router.get("/", authController.protect, userController.getAllUser);
+router.get("/",authController.protect, userController.getAllUser);
+router.get('/userProfile',authController.protect,userController.userProfile)
 router
   .route("/:id")
   .delete(
