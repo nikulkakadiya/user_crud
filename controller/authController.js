@@ -22,7 +22,7 @@ exports.registration = catchAsync(async (req, res, next) => {
 
     res.status(201).json({
         status: "success",
-        message: "Register success fully",
+        message: "Register success Fully",
     });
 });
 
@@ -50,7 +50,7 @@ exports.login = catchAsync(async (req, res, next) => {
     // console.log(token);
     return res.status(200).json({
         status: "success",
-        message: "Login successfully",
+        message: "Login success Fully",
         token,
         email: user.email,
         role: user.role,
