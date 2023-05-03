@@ -13,6 +13,7 @@ router.get(
   authController.protect,
   subjectController.getAllSubject
 );
+router.get('/findSubjectById/:id',authController.protect,subjectController.findSubjectById);
 router
   .route("/:id")
   .delete(authController.protect, subjectController.deleteSubject)

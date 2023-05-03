@@ -33,3 +33,11 @@ exports.deleteSubject = catchAsync(async (req, res, next) => {
         message: "delete success Fully",
     });
 })
+
+exports.findSubjectById = catchAsync(async (req, res, next) => {
+   const data=await Subject.findById(req.params.id,{_id:1,name:1,courseName:1});
+   res.status(201).json({
+    status: "success",
+    data
+});
+})
