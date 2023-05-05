@@ -10,35 +10,37 @@ exports.createSubject = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.getAllSubject = catchAsync(async (req, res, next) => {
-  const result = await Subject.find({}, { _id: 1, name: 1, courseName: 1 });
-  res.status(201).json({
-    status: "success",
-    result,
-  });
-});
-
 // exports.getAllSubject = catchAsync(async (req, res, next) => {
-//     const page = req.query.page || 1; // Set the default page number to 1
-//     const limit = req.query.limit || 5; // Set the default limit to 10
-
-//     const count = await Subject.countDocuments(); // Get the total number of documents in the collection
-//     const totalPages = Math.ceil(count / limit); // Calculate the total number of pages
-
-//     const skip = (page - 1) * limit; // Calculate the number of documents to skip
-
-//     const result = await Subject.find({}, { _id: 1, name: 1, courseName: 1 })
-//         .skip(skip)
-//         .limit(limit);
-
-//     res.status(200).json({
-//         status: "success",
-//         result,
-//         currentPage: page,
-//         totalPages,
-//         totalResults: count,
-//     });
+//   const result = await Subject.find({}, { _id: 1, name: 1, courseName: 1 });
+//   res.status(201).json({
+//     status: "success",
+//     result,
+//   });
 // });
+
+// ***************************     pagination code    *******************************************
+
+exports.getAllSubject = catchAsync(async (req, res, next) => {
+    const page = req.query.page || 1; // Set the default page number to 1
+    const limit = req.query.limit || 5; // Set the default limit to 10
+
+    const count = await Subject.countDocuments(); // Get the total number of documents in the collection
+    const totalPages = Math.ceil(count / limit); // Calculate the total number of pages
+
+    const skip = (page - 1) * limit; // Calculate the number of documents to skip
+
+    const result = await Subject.find({}, { _id: 1, name: 1, courseName: 1 })
+        .skip(skip)
+        .limit(limit);
+
+    res.status(200).json({
+        status: "success",
+        result,
+        currentPage: page,
+        totalPages,
+        totalResults: count,
+    });
+});
 
 
 exports.updateSubject = catchAsync(async (req, res, next) => {
