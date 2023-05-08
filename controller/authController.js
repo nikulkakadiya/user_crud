@@ -29,7 +29,7 @@ exports.registration = catchAsync(async (req, res, next) => {
 // =========================== Login =================================
 
 exports.login = catchAsync(async (req, res, next) => {
-    const { email, password } = req.body;
+    const { email, password,role } = req.body;
 
     // 1) Check email and password exists
 
@@ -37,9 +37,13 @@ exports.login = catchAsync(async (req, res, next) => {
         return next(new AppError("Please provide email and password", 400));
     }
 
+    if(!role){
+        return next(new AppError("Please check your role", 400));
+    }
+
     // 2) Check is user exists and password is correct
 
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email,role }).select("+password");
 
     if (!user || !(await user.correctPassword(password, user.password))) {
         return next(new AppError("Incorrect email and password", 401));
