@@ -100,5 +100,88 @@ export class SubjectListComponent implements OnInit {
     this.subjectService.getSubjects(this.currentPage, 10)
 
 
+    ******************************** OTP CODE*****************************
+    const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const twilio = require("twilio");
+const otpDataStore = {};
+
+const app = express();
+app.use(bodyParser.json());
+app.use(cors());
+
+app.post("/send-otp", (req, res) => {
+  const { phoneNumber } = req.body;
+
+  if (!phoneNumber) {
+    return res.status(400).send({ message: "Phone number is required" });
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000);
+  const message = `Your OTP is ${otp}`;
+
+  const accountSid = "AC37c3a84b35b9df50c49c5722b0d0a978";
+  const authToken = "b1040f0684b952f54fea49757d9dea52";
+  const client = twilio(accountSid, authToken);
+
+  client.messages
+    .create({
+      body: message,
+      from: "+15855342532",
+      to: phoneNumber,
+    })
+    .then(() => {
+      // Store the OTP and its expiry time in memory
+      const otpData = {
+        phoneNumber,
+        otp,
+        expiryTime: new Date().getTime() + 10 * 60 * 1000, // Expiry time is 10 minutes from now
+      };
+      otpDataStore[phoneNumber] = otpData;
+      console.log(otpDataStore[phoneNumber]);
+      res.send({ message: "OTP sent successfully" });
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).send({ message: "Failed to send OTP" });
+    });
+});
+
+app.post("/verify-otp", (req, res) => {
+  const { phoneNumber, otp } = req.body;
+  if (!phoneNumber || !otp) {
+    return res
+      .status(400)
+      .send({ message: "Phone number and OTP are required" });
+  }
+
+  const otpData = otpDataStore[phoneNumber];
+  // console.log(typeof otpData.otp + " " + typeof otp);
+
+  if (!otpData) {
+    return res.status(404).send({ message: "OTP not found" });
+  }
+
+  if (otpData.otp !== otp) {
+    return res.status(401).send({ message: "Invalid OTP" });
+  }
+
+  if (new Date().getTime() > otpData.expiryTime) {
+    return res.status(401).send({ message: "OTP has expired" });
+  }
+
+  // If the OTP is valid and has not expired, delete it from the memory store
+  delete otpDataStore[phoneNumber];
+
+  res.send({ message: "OTP verified successfully" });
+});
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`Server ${port}`);
+});
+
 
 */
