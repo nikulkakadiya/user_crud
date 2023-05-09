@@ -37,8 +37,10 @@ exports.updateUser = catchAsync(async (req, res, next) => {
 });
 
 exports.userProfile = catchAsync(async (req, res, next) => {
-    const data=req.user;
+    const {name,email,role}=req.user;
     res.status(200).json({
-        data
+        name,
+        email,
+        role
     });
 })
